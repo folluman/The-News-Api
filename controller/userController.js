@@ -11,7 +11,6 @@ exports.user_create_list = asyncHandler(async (req, res, next) => {
   res.json(users);
 });
 
-
 // Create User
 exports.user_create_post = [
   body('username')
@@ -47,13 +46,13 @@ exports.user_create_post = [
     const phone = await User.findOne({ phone: req.body.phone }).exec();
 
     if (username) {
-      return res.send('Username arealdy exists! Please choose another username');
+      return res.status(400).json({ error: 'Username already exists!' });
     }
     if(email) {
-      return res.send('E-mail arealdy exists! Please choose another e-mail');
+      return res.status(400).json({ error: 'E-mail already exists!' });
     }
     if(phone) {
-      return res.send('Phone arealdy exists! Please choose another Phone');
+      return res.status(400).json({ error: 'Phone already exists!' });
     }
 
     const errors = validationResult(req);
@@ -62,18 +61,21 @@ exports.user_create_post = [
 
     const user = new User ({
       username: req.body.username,
-      email: req.body.email,
       password: hashedPassword,
-      phone: req.body.phone,
+      email: req.body.email,
+      phone: parseInt(req.body.phone),
     });
 
     if(!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: errors.array()
+      });
     }
 
     await user.save();
 
-    res.send('Datas saves and validates');
+    res.status(200).json({ message: 'User created successfully!' });
   }
   )  
 ];
