@@ -27,7 +27,7 @@ app.use('/users', usersRouter);
 
 // Set up mongoose connection
 var mongoDB = process.env.MONGODB_URL;
-mongoose.connect(mongoDB, {useUnifiedTopology: true}); // utilize useUnifiedTopology porque o useNewUrlParser está depreciado
+mongoose.connect(mongoDB, {useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.log.bind(console, 'MongoDB connection error: '));
 
