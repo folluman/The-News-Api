@@ -3,6 +3,8 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+require('dotenv').config;
 
 // Display list Users
 exports.user_create_list = asyncHandler(async (req, res, next) => {
@@ -63,6 +65,7 @@ exports.user_create_post = [
       username: req.body.username,
       password: hashedPassword,
       email: req.body.email,
+      role: req.body.role,
       phone: parseInt(req.body.phone),
     });
 
@@ -90,6 +93,43 @@ exports.user_delete_post = asyncHandler(async (req, res, next) => {
     return;
   }
   res.send('User was not found');
+});
+
+// Login User
+exports.user_login_post = asyncHandler(async(req, res, next) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).exec();
+
+  if(!user) {
+    return res.status(401).json({ error: 'Email or password invalid!'});
+  }
+
+  // Compare hasheds passwords
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if(!isPasswordValid) {
+    return res.status(401).json('Password invalid!');
+  }
+
+  // Generate jwt token
+  const token = jwt.sign(
+    {
+      id: user._id,
+      username: user.username,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h'}
+  );
+  
+  res.status(200).json({
+    token,
+    user: {
+      id: user._id,
+      username: user.username,
+      role: user.role,
+    }
+  });
 });
 
 // Update User
