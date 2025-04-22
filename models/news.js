@@ -7,7 +7,7 @@ let NewsSchema = mongoose.Schema({
   content: {type: String, required: true},
   category: [{type: Schema.Types.ObjectId, ref: 'Category'}],
   qtyLikes: {type: Number},
-  author: {type: Schema.Types.ObjectId, ref: 'Author', required: true},
+  author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now},
 });

@@ -8,7 +8,6 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var adminRouter = require('./routes/admins');
 
 const helmet = require('helmet');
 var app = express();
@@ -26,7 +25,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/admin', adminRouter);
 
 // Set up mongoose connection
 var mongoDB = process.env.MONGODB_URL;
