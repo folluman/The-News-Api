@@ -121,7 +121,7 @@ exports.user_login_post = asyncHandler(async(req, res, next) => {
     process.env.JWT_SECRET,
     { expiresIn: '1h'}
   );
-  
+
   res.status(200).json({
     token,
     user: {
@@ -160,7 +160,6 @@ exports.user_update_post = [
     .escape()
     .withMessage('Phone must be specified'),
 
- 
   // Process request after validation and sanitization
   asyncHandler(async(req, res, next) => {
     const username = await User.findOne({ username: req.body.username }).exec();
@@ -168,15 +167,15 @@ exports.user_update_post = [
     const phone = await User.findOne({ phone: req.body.phone }).exec();
 
     if (username) {
-      return res.send('Username arealdy exists! Please choose another username');
+      return res.status(400).json({ error: 'Username already exists!' });
     }
-    if(email ) {
-      return res.send('E-mail arealdy exists! Please choose another e-mail');
+    if(email) {
+      return res.status(400).json({ error: 'E-mail already exists!' });
     }
     if(phone) {
-      return res.send('Phone arealdy exists! Please choose another Phone');
+      return res.status(400).json({ error: 'Phone already exists!' });
     }
-   
+    
     const errors = validationResult(req);
 
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
