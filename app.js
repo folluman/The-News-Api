@@ -8,6 +8,7 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var newsRouter = require('./routes/news');
 
 const helmet = require('helmet');
 var app = express();
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/news', newsRouter);
 
 // Set up mongoose connection
 var mongoDB = process.env.MONGODB_URL;
