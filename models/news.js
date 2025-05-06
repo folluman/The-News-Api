@@ -2,12 +2,12 @@ let mongoose = require('mongoose');
 
 let Schema = mongoose.Schema;
 
-let NewsSchema = mongoose.Schema({
+let NewsSchema = new Schema({
   title: {type: String, required: true},
   content: {type: String, required: true},
-  category: [{type: Schema.Types.ObjectId, ref: 'Category'}],
-  qtyLikes: {type: Number},
-  author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+  // category: [{type: Schema.Types.ObjectId, ref: 'Category'}],
+  // qtyLikes: {type: Number},
+  // author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now},
 });
