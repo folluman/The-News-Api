@@ -16,7 +16,7 @@ exports.news_create_post = [
   body('content')
     .isLength({min: 1})
     .withMessage('Add content news'),
-
+  body('file'),
   asyncHandler(async(req, res, next) => {
     const title = await News.findOne({ title: req.body.title }).exec();
 
@@ -26,9 +26,13 @@ exports.news_create_post = [
       return res.status(400).json({error: 'Title already exists! Choose another title for this news'});
     }
 
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
     const news = new News({
       title: req.body.title,
       content: req.body.content,
+      src: req.file.path,
     });
 
     if(!errors.isEmpty){
