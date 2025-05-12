@@ -5,6 +5,6 @@ const upload = require('../config/multer');
 
 router.get('/list', news_controller.news_create_list);
 
-router.post('/create', upload.single('file'),news_controller.news_create_post);
+router.post('/create', upload.single('file'), news_controller.news_create_post);
 
 module.exports = router;

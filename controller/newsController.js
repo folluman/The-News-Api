@@ -1,6 +1,8 @@
 const News = require('../models/news');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const fs = require('fs').promises;
+const path = require('path');
 
 exports.news_create_list = asyncHandler(async(req, res, next) => {
   const news = await News.find().exec();
@@ -16,34 +18,49 @@ exports.news_create_post = [
   body('content')
     .isLength({min: 1})
     .withMessage('Add content news'),
-  body('file'),
-  asyncHandler(async(req, res, next) => {
-    const title = await News.findOne({ title: req.body.title }).exec();
-
+  
+  asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
-    if (title) {
-      return res.status(400).json({error: 'Title already exists! Choose another title for this news'});
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-    const news = new News({
-      title: req.body.title,
-      content: req.body.content,
-      src: req.file.path,
-    });
-
-    if(!errors.isEmpty){
+    
+    if (!errors.isEmpty()) {  // Corrigido: errors.isEmpty() é uma função
       return res.status(400).json({
         error: 'Validation failed',
         details: errors.array()
       });
     }
 
-    await news.save();
+    const titleExists = await News.findOne({ title: req.body.title }).exec();
+    if (titleExists) {
+      return res.status(400).json({error: 'Title already exists!'});
+    }
 
-    res.status(200).json({ message: 'News created sucessfully'});
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    try {
+      const filePath = path.join(__dirname, '../uploads', req.file.filename);
+      const fileData = await fs.readFile(filePath);
+      const base64Image = `data:${req.file.mimetype};base64,${fileData.toString('base64')}`;
+
+      const news = new News({
+        title: req.body.title,
+        content: req.body.content,
+        src: base64Image,
+      });
+
+      await news.save();
+      
+      await fs.unlink(filePath);
+
+      res.status(201).json({ 
+        message: 'News created successfully!',
+        news: news
+      });
+
+    } catch (err) {
+      console.error('Error processing image:', err);
+      res.status(500).json({ error: 'Error processing image' });
+    }
   })
 ];

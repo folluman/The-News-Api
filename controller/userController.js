@@ -166,6 +166,7 @@ exports.user_update_post = [
     const email = await User.findOne({ email: req.body.email }).exec();
     const phone = await User.findOne({ phone: req.body.phone }).exec();
 
+    // Verify if datas already exist
     if (username) {
       return res.status(400).json({ error: 'Username already exists!' });
     }
@@ -178,8 +179,10 @@ exports.user_update_post = [
     
     const errors = validationResult(req);
 
+    // transforms the password into a hash
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
 
+    // save user as Object
     const user = new User ({
       username: req.body.username,
       email: req.body.email,
@@ -192,6 +195,7 @@ exports.user_update_post = [
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // update user
     await User.findByIdAndUpdate(req.params.id, user, {});
 
     res.send('Data uploaded');

@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+const { DateTime } = require('luxon');
 
 let Schema = mongoose.Schema;
 
@@ -21,6 +22,10 @@ NewsSchema.pre('save', function(next) {
 NewsSchema.pre('findOneAndUpdate', function(next) {
   this.set({ updated_at: new Date()});
   next();
+});
+
+NewsSchema.virtual('created_at_formatted').get(function() {
+  return this.created_at ? DateTime.fromJSDate(this.created_at).toLocaleString(DateTime.DATA_MED) : '';
 });
 
 module.exports = mongoose.model('News', NewsSchema);
