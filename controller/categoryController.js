@@ -2,6 +2,12 @@ const Category = require('../models/category');
 const assyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 
+exports.category_list = assyncHandler(async(req, res, next) => {
+  const category = await Category.find().exec();
+
+  res.json(category);
+});
+
 exports.category_create = [
   body('name')
     .trim()
@@ -9,7 +15,7 @@ exports.category_create = [
     .withMessage('Category must be specified.'),
 
   assyncHandler(async(req, res, next) => {
-    const categoryName = await Category.findOne({ category: req.body.category }).exec();
+    const categoryName = await Category.findOne({ name: req.body.name }).exec();
 
     if(categoryName) {
       return res.status(400).json({error: 'Category already exist'});

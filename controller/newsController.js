@@ -44,9 +44,9 @@ exports.news_create_post = [
       const base64Image = `data:${req.file.mimetype};base64,${fileData.toString('base64')}`;
 
       const news = new News({
+        src: base64Image,
         title: req.body.title,
         content: req.body.content,
-        src: base64Image,
       });
 
       await news.save();
