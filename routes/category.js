@@ -4,7 +4,6 @@ const category_controller = require('../controller/categoryController');
 
 router.get('/list', category_controller.category_list);
 
-
 router.post('/create', category_controller.category_create);
 
 
