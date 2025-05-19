@@ -14,7 +14,10 @@ var categoryRouter = require('./routes/category');
 const helmet = require('helmet');
 var app = express();
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 // Settings Helmet
 app.use(helmet());

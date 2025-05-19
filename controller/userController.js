@@ -3,8 +3,8 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const jwt = require('jsonwebtoken');
-require('dotenv').config;
+const cookieParser = require('cookie-parser');
+require('dotenv').config();
 const { generateToken } = require('../authentication/auth');
 
 // Display list Users
@@ -114,7 +114,14 @@ exports.user_login_post = asyncHandler(async(req, res, next) => {
     }
 
     const token = generateToken(user);
-    res.json({ token, role: user.role });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
+      maxAge: 36000000
+    });
+
+    return res.json({ message: 'Login realizado com sucesso'});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -190,3 +197,12 @@ exports.user_update_post = [
   }
   )
 ];
+
+exports.user_info_get = asyncHandler(async(req, res, next) => {
+  res.json({
+    id: req.user.id,
+    username: req.user.username,
+    email: req.user.email,
+    role: req.user.role
+  });
+});

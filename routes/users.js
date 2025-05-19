@@ -1,8 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const user_controller = require('../controller/userController');
+const { authenticate } = require('../middlewares/authMiddleware');
 
 /* GET users listing. */
+
+router.get('/me', authenticate, user_controller.user_info_get);
+
 router.get('/list', user_controller.user_create_list); // Only admin request list
 
 router.post('/login', user_controller.user_login_post);
