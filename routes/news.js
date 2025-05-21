@@ -6,6 +6,6 @@ const { authenticate, isAdmin } = require('../middlewares/authMiddleware');
 
 router.get('/list', news_controller.news_create_list);
 
-router.post('/create', authenticate, isAdmin, upload.single('file'), news_controller.news_create_post);
+router.post('/create', upload.single('file'), news_controller.news_create_post);
 
 module.exports = router;
