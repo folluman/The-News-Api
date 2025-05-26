@@ -22,7 +22,7 @@ exports.news_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     
-    if (!errors.isEmpty()) {  // Corrigido: errors.isEmpty() é uma função
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         error: 'Validation failed',
         details: errors.array()
@@ -64,3 +64,18 @@ exports.news_create_post = [
     }
   })
 ];
+
+exports.news_content = asyncHandler(async(req, res, next) => {
+  const news = await News.findById(req.params.id).exec();
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: 'News not found!',
+      details: errors.array()
+    });
+  }
+
+  res.json(news);
+}); 

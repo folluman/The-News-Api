@@ -8,4 +8,6 @@ router.get('/list', news_controller.news_create_list);
 
 router.post('/create', upload.single('file'), news_controller.news_create_post);
 
+router.get('/:id', news_controller.news_content);
+
 module.exports = router;

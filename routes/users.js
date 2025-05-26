@@ -17,4 +17,6 @@ router.delete('/:id/delete', user_controller.user_delete_post);
 
 router.put('/:id/update', user_controller.user_update_post);
 
+router.post('/logout', user_controller.user_logout);
+
 module.exports = router;

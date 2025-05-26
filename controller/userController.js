@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const cookieParser = require('cookie-parser');
+const cookieOptions = require('../authentication/cookieOptions');
 require('dotenv').config();
 const { generateToken } = require('../authentication/auth');
 
@@ -110,16 +110,12 @@ exports.user_login_post = asyncHandler(async(req, res, next) => {
     // Compare hasheds passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if(!isPasswordValid) {
-      return res.status(401).json('Password invalid!');
+      res.status(400).json({message: 'Password invalid'});
+      return;
     }
 
     const token = generateToken(user);
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict',
-      maxAge: 36000000
-    });
+    res.cookie('token', token, cookieOptions);
 
     return res.json({ message: 'Login realizado com sucesso'});
   } catch (err) {
@@ -205,4 +201,27 @@ exports.user_info_get = asyncHandler(async(req, res, next) => {
     email: req.user.email,
     role: req.user.role
   });
+});
+
+exports.user_logout = asyncHandler(async (req, res, next) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: cookieOptions.httpOnly,
+      secure: cookieOptions.secure,
+      sameSite: cookieOptions.sameSite,
+      path: cookieOptions.path,
+      domain: cookieOptions.domain
+    });
+    
+    res.status(200).json({ 
+      success: true,
+      message: 'Logout realizado com sucesso' 
+    });
+  } catch (err) {
+    console.error('Erro durante logout:', err);
+    res.status(500).json({ 
+      success: false,
+      message: 'Erro durante o logout' 
+    });
+  }
 });
