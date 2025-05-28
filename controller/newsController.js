@@ -18,7 +18,8 @@ exports.news_create_post = [
   body('content')
     .isLength({min: 1})
     .withMessage('Add content news'),
-  
+  body('author'),
+
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     

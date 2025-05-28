@@ -8,7 +8,7 @@ let NewsSchema = new Schema({
   content: {type: String, required: true},
   // category: [{type: Schema.Types.ObjectId, ref: 'Category'}],
   // qtyLikes: {type: Number},
-  // author: {type: Schema.Types.ObjectId, ref: 'User'},
+  author: {type: Schema.Types.ObjectId, ref: 'User'},
   src: {type: String},
   created_at: {type: Date, default: Date.now},
   updated_at: {type: Date, default: Date.now},
