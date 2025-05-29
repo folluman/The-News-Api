@@ -117,7 +117,7 @@ exports.user_login_post = asyncHandler(async(req, res, next) => {
     const token = generateToken(user);
     res.cookie('token', token, cookieOptions);
 
-    return res.json({ message: 'Login realizado com sucesso'});
+    return res.json({ message: 'Login realizado com sucesso', jwt: token});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

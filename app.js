@@ -15,8 +15,9 @@ const helmet = require('helmet');
 var app = express();
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Settings Helmet

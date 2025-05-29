@@ -4,4 +4,5 @@ module.exports = {
   sameSite: 'strict', 
   maxAge: 36000000, 
   path: '/', 
-  domain: process.env.COOKIE_DOMAIN || undefined };
+  domain: process.env.COOKIE_DOMAIN || undefined 
+};
